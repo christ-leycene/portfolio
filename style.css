@@ -122,6 +122,28 @@ footer{border-top:1px solid var(--line); padding:30px 28px 50px; text-align:cent
 .cmd-cursor{display:inline-block; width:7px; height:1em; background:var(--green); vertical-align:-2px; margin-left:3px; animation:blink 1s step-end infinite;}
 @keyframes blink{50%{opacity:0;}}
 
-.cert-entry{display:flex; gap:16px; align-items:flex-start; cursor:pointer;}
+.cert-entry{
+  display:flex; width:100%; gap:16px; align-items:flex-start;
+  color:inherit; font:inherit; text-align:left; background:transparent;
+  border-right:0; border-bottom:0; border-left:0; cursor:pointer;
+}
 .cert-entry:hover{background:rgba(54,217,122,0.04);}
+.cert-entry:focus-visible{outline:2px solid var(--green); outline-offset:3px;}
 .cert-thumb{width:84px; height:60px; object-fit:cover; border:1px solid var(--line); border-radius:4px; flex-shrink:0;}
+
+.certificate-viewer{
+  position:relative; width:fit-content; max-width:96vw; max-height:96dvh;
+  padding:56px 16px 16px; overflow:visible; color:var(--text);
+  background:var(--panel); border:1px solid var(--line); border-radius:8px;
+}
+.certificate-viewer::backdrop{background:rgba(0,0,0,0.88);}
+.certificate-viewer img{
+  display:block; max-width:calc(96vw - 32px); max-height:calc(96dvh - 88px);
+  object-fit:contain;
+}
+.certificate-viewer-close{
+  position:absolute; top:10px; right:12px; width:36px; height:36px;
+  border:1px solid var(--line); border-radius:4px; color:var(--text);
+  background:var(--panel2); font-size:24px; line-height:1; cursor:pointer;
+}
+.certificate-viewer-close:hover{border-color:var(--green-dim); color:var(--green);}

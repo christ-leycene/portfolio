@@ -186,8 +186,8 @@ function renderProjectDetail(id){
 }
 
 function renderCerts(){
-  const rows = CERTS.map(c => `
-    <div class="entry cert-entry" onclick="window.open('${c.img}','_blank')">
+  const rows = CERTS.map((c, index) => `
+    <button class="entry cert-entry" type="button" data-certificate-index="${index}" aria-label="View ${esc(c.title)} certificate">
       <img class="cert-thumb" src="${c.img}" alt="${esc(c.title)}">
       <div>
         <div class="when mono">${esc(c.date)}</div>
@@ -195,12 +195,16 @@ function renderCerts(){
         <div class="org">${esc(c.org)}</div>
         ${c.tags ? `<div class="chips">${c.tags.map(t=>`<span class="chip">${esc(t)}</span>`).join("")}</div>` : ""}
       </div>
-    </div>
+    </button>
   `).join("");
   return `
     <h2 class="sec"><span class="mono">&gt; ls ./certifications</span></h2>
     <p style="color:var(--muted);font-size:13.5px;margin-top:-14px;margin-bottom:10px;">Click a certification to view the certificate.</p>
     ${rows}
+    <dialog class="certificate-viewer" aria-label="Certificate preview">
+      <button class="certificate-viewer-close" type="button" aria-label="Close certificate">×</button>
+      <img alt="">
+    </dialog>
   `;
 }
 
@@ -241,6 +245,26 @@ function render(){
     html = renderHome();
   }
   app.innerHTML = html;
+
+  const certificateViewer = app.querySelector(".certificate-viewer");
+  if(certificateViewer){
+    const certificateImage = certificateViewer.querySelector("img");
+    app.querySelectorAll("[data-certificate-index]").forEach(button=>{
+      button.addEventListener("click",()=>{
+        const certificate = CERTS[Number(button.dataset.certificateIndex)];
+        if(!certificate) return;
+        certificateImage.src = certificate.img;
+        certificateImage.alt = certificate.title;
+        certificateViewer.showModal();
+      });
+    });
+    certificateViewer.querySelector(".certificate-viewer-close").addEventListener("click",()=>{
+      certificateViewer.close();
+    });
+    certificateViewer.addEventListener("click",event=>{
+      if(event.target === certificateViewer) certificateViewer.close();
+    });
+  }
 
   document.querySelectorAll(".navlinks a").forEach(a=>{
     a.classList.toggle("active", a.dataset.go === hash || (hash.startsWith("project-") && a.dataset.go === "projects"));
